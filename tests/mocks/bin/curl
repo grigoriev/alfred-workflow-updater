@@ -1,0 +1,24 @@
+#!/bin/bash
+# Mock curl. MOCK_LATEST sets the release tag; MOCK_CURL_FAIL simulates failure.
+if [ -n "$MOCK_CURL_FAIL" ]; then
+  exit 1
+fi
+if [[ "$*" == *"api.github.com"* ]]; then
+  cat <<JSON
+{
+  "tag_name": "${MOCK_LATEST:-v2.0.2}",
+  "assets": [
+    { "name": "Network.alfredworkflow", "browser_download_url": "https://example.com/Network.alfredworkflow" }
+  ]
+}
+JSON
+  exit 0
+fi
+# Download: write to the -o target
+out=""; prev=""
+for a in "$@"; do
+  [ "$prev" == "-o" ] && out="$a"
+  prev="$a"
+done
+[ -n "$out" ] && echo "fake workflow" > "$out"
+exit 0
