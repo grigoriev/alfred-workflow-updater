@@ -59,7 +59,7 @@ if [[ "$repo" == "" ]]; then
   exit
 fi
 
-api=$(curl -sfL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null)
+api=$(curl --proto '=https' -sfL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null)
 latest=$(printf '%s' "$api" | grep -m 1 '"tag_name"' | sed -E 's/.*"tag_name":[[:space:]]*"v?([^"]+)".*/\1/')
 
 if [[ "$latest" == "" ]]; then
