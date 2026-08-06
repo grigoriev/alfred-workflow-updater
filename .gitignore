@@ -1,1 +1,4 @@
 .idea/
+coverage/
+sonar-coverage.xml
+.simplecov

@@ -70,8 +70,7 @@ fi
 if [[ "$asset" != "" ]]; then
   url="https://github.com/$repo/releases/latest/download/$asset"
 else
-  url=$(printf '%s' "$api" | grep '"browser_download_url"' | grep '\.alfredworkflow' \
-    | head -1 | sed -E 's/.*"browser_download_url":[[:space:]]*"([^"]+)".*/\1/')
+  url=$(printf '%s' "$api" | grep '"browser_download_url"' | grep '\.alfredworkflow' | head -1 | sed -E 's/.*"browser_download_url":[[:space:]]*"([^"]+)".*/\1/')
 fi
 
 if [[ "$latest" != "$current" ]] \
