@@ -3,6 +3,8 @@
 ![CI](https://github.com/grigoriev/alfred-workflow-updater/actions/workflows/ci.yml/badge.svg)
 [![Release](https://img.shields.io/github/v/release/grigoriev/alfred-workflow-updater)](https://github.com/grigoriev/alfred-workflow-updater/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
+[![Coverage](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=coverage)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
 
 A tiny, self-contained GitHub-release updater for Alfred workflows. One Bash
 file, no dependencies. Drop it into any workflow, point it at a GitHub repo,
