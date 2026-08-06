@@ -16,60 +16,68 @@
 # Wire a Script Filter (script "./update.sh") to a Run Script
 # (script "./update.sh \"{query}\"") that installs the download.
 
-REPO="${update_repo:-}"
-ASSET="${update_asset:-}"
-CACHE="${alfred_workflow_cache:-/tmp}"
-CURRENT="${alfred_workflow_version:-}"
-ICON="${update_icon:-icon.png}"
+repo="${update_repo:-}"
+asset="${update_asset:-}"
+cache="${alfred_workflow_cache:-/tmp}"
+current="${alfred_workflow_version:-}"
+icon="${update_icon:-icon.png}"
 
-jsonEscape() {
-  printf '%s' "$1" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
+json_escape() {
+  local text="$1"
+  printf '%s' "$text" | sed -e 's/\\/\\\\/g' -e 's/"/\\"/g'
+  return 0
 }
 
 # $1 title  $2 subtitle  $3 arg  $4 valid (true/false)
 item() {
+  local title="$1" subtitle="$2" arg="$3" valid="$4"
   printf '{"title":"%s","subtitle":"%s","arg":"%s","valid":%s,"icon":{"path":"%s"}}' \
-    "$(jsonEscape "$1")" "$(jsonEscape "$2")" "$(jsonEscape "$3")" "$4" "$(jsonEscape "$ICON")"
+    "$(json_escape "$title")" "$(json_escape "$subtitle")" "$(json_escape "$arg")" \
+    "$valid" "$(json_escape "$icon")"
+  return 0
 }
 
 items() {
-  printf '{"items":[%s]}\n' "$1"
+  local body="$1"
+  printf '{"items":[%s]}\n' "$body"
+  return 0
 }
 
 # Action: download the workflow and let Alfred install it
-if [ "$1" != "" ]; then
-  mkdir -p "$CACHE"
-  FILE="$CACHE/update.alfredworkflow"
-  if curl -sfL "$1" -o "$FILE"; then
-    open "$FILE"
+query="$1"
+if [[ "$query" != "" ]]; then
+  mkdir -p "$cache"
+  file="$cache/update.alfredworkflow"
+  if curl --proto '=https' -sfL "$query" -o "$file"; then
+    open "$file"
   fi
   exit
 fi
 
-if [ "$REPO" == "" ]; then
+if [[ "$repo" == "" ]]; then
   items "$(item 'Updater not configured' 'Set the update_repo workflow variable to owner/repo' '' false)"
   exit
 fi
 
-API=$(curl -sfL "https://api.github.com/repos/$REPO/releases/latest" 2>/dev/null)
-LATEST=$(printf '%s' "$API" | grep -m 1 '"tag_name"' | sed -E 's/.*"tag_name":[[:space:]]*"v?([^"]+)".*/\1/')
+api=$(curl -sfL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null)
+latest=$(printf '%s' "$api" | grep -m 1 '"tag_name"' | sed -E 's/.*"tag_name":[[:space:]]*"v?([^"]+)".*/\1/')
 
-if [ "$LATEST" == "" ]; then
+if [[ "$latest" == "" ]]; then
   items "$(item 'Could not check for updates' 'Check your connection and try again' '' false)"
   exit
 fi
 
-if [ "$ASSET" != "" ]; then
-  URL="https://github.com/$REPO/releases/latest/download/$ASSET"
+if [[ "$asset" != "" ]]; then
+  url="https://github.com/$repo/releases/latest/download/$asset"
 else
-  URL=$(printf '%s' "$API" | grep '"browser_download_url"' | grep '\.alfredworkflow' \
+  url=$(printf '%s' "$api" | grep '"browser_download_url"' | grep '\.alfredworkflow' \
     | head -1 | sed -E 's/.*"browser_download_url":[[:space:]]*"([^"]+)".*/\1/')
 fi
 
-if [ "$LATEST" != "$CURRENT" ] \
-  && [ "$(printf '%s\n%s\n' "$LATEST" "$CURRENT" | sort -V | tail -n 1)" == "$LATEST" ] \
-  && [ "$URL" != "" ]; then
-  items "$(item "Update to v$LATEST" "You have v$CURRENT, press ⏎ to update" "$URL" true)"
+if [[ "$latest" != "$current" ]] \
+  && [[ "$(printf '%s\n%s\n' "$latest" "$current" | sort -V | tail -n 1)" == "$latest" ]] \
+  && [[ "$url" != "" ]]; then
+  items "$(item "Update to v$latest" "You have v$current, press ⏎ to update" "$url" true)"
 else
-  items "$(item "Up to date (v$CURRENT)" "You have the latest version" '' false)"
+  items "$(item "Up to date (v$current)" "You have the latest version" '' false)"
 fi
