@@ -21,6 +21,26 @@ GitHub API, compares the tag with the installed workflow version, and shows:
 Selecting the update item runs `update.sh` again with the download URL. That
 downloads the asset and opens it, so Alfred installs the new version.
 
+## Autoupdate
+
+`autoupdate.sh` adds an opt-in automatic check on top of `update.sh`. A workflow
+sources it and, on its home screen, calls:
+
+- `autoupdate_refresh` runs a throttled check (at most once a day) when
+  autoupdate is enabled, recording any available update.
+- `autoupdate_banner` shows an "Update available" item that installs it.
+- `set_autoupdate on|off` toggles autoupdate; `autoupdate_clear` drops a pending
+  update after installing.
+
+It reuses `update.sh` for the check, so all update logic stays in this repo.
+
+## Delivery bundle
+
+Each release attaches `updater.tar.gz` with all the scripts (`update.sh`,
+`autoupdate.sh`). A workflow's `make updater` fetches and extracts the bundle
+into `src/` at build time, so new update features here reach every workflow on
+its next build, with no per-workflow changes.
+
 ## Install into your workflow
 
 1. Copy `update.sh` into your workflow folder.
