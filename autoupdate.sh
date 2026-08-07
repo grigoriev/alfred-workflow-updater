@@ -33,10 +33,12 @@ autoupdate_pending() {
   return 0
 }
 
-# A file's modification time as a unix timestamp (BSD stat, then GNU).
+# A file's modification time as a unix timestamp. Try GNU stat first (its -c is
+# a clean failure on BSD), then BSD stat, so the ambiguous BSD -f never runs on
+# GNU where it can print filesystem info instead of failing.
 autoupdate_mtime() {
   local file="$1"
-  stat -f %m "$file" 2>/dev/null || stat -c %Y "$file" 2>/dev/null
+  stat -c %Y "$file" 2>/dev/null || stat -f %m "$file" 2>/dev/null
   return 0
 }
 
@@ -72,7 +74,7 @@ autoupdate_refresh() {
   if [[ -f "$stamp" ]]; then
     now="$(date +%s)"
     mtime="$(autoupdate_mtime "$stamp")"
-    if [[ -n "$mtime" ]] && [[ $(( now - mtime )) -lt 86400 ]]; then
+    if [[ "$mtime" =~ ^[0-9]+$ ]] && [[ $(( now - mtime )) -lt 86400 ]]; then
       return 0
     fi
   fi
