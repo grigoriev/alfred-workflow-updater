@@ -101,3 +101,25 @@ autoupdate_banner() {
   add_result "" "$url" "Update available" "Install the new version of this workflow" "icon.png" "yes"
   return 0
 }
+
+# Add the shared ">" menu items: a manual update check and the autoupdate
+# toggle, filtered by a case-insensitive substring. $1 filter, $2 update icon.
+# "Check for updates" autocompletes to "> update", which each workflow routes to
+# its fetched update script.
+autoupdate_menu() {
+  local filter="$1" icon="${2:-icon.png}" lc
+  lc="$(printf '%s' "$filter" | tr '[:upper:]' '[:lower:]')"
+  if [[ "update check for updates" == *"$lc"* ]]; then
+    add_result "" "" "Check for updates" "Check for and install a new version" "$icon" "no" "> update"
+  fi
+  if autoupdate_enabled; then
+    if [[ "deactivate autoupdate" == *"$lc"* ]]; then
+      add_result "" "autoupdate off" "Deactivate autoupdate" "Stop checking automatically" "$icon" "yes"
+    fi
+  else
+    if [[ "activate autoupdate" == *"$lc"* ]]; then
+      add_result "" "autoupdate on" "Activate autoupdate" "Check automatically" "$icon" "yes"
+    fi
+  fi
+  return 0
+}

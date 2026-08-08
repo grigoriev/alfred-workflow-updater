@@ -83,3 +83,24 @@ STUB
   run autoupdate_enabled
   [ "$status" -ne 0 ]
 }
+
+@test "autoupdate_menu offers a check and an activate toggle when off" {
+  add_result() { printf '%s|%s|%s\n' "$3" "$2" "$7"; }
+  run autoupdate_menu "" "up.png"
+  [[ "$output" == *"Check for updates||> update"* ]]
+  [[ "$output" == *"Activate autoupdate|autoupdate on|"* ]]
+}
+
+@test "autoupdate_menu shows deactivate when autoupdate is on" {
+  set_autoupdate on
+  add_result() { printf '%s|%s\n' "$3" "$2"; }
+  run autoupdate_menu "" "up.png"
+  [[ "$output" == *"Deactivate autoupdate|autoupdate off"* ]]
+}
+
+@test "autoupdate_menu filters by a substring" {
+  add_result() { printf '%s\n' "$3"; }
+  run autoupdate_menu "activ" "up.png"
+  [[ "$output" == *"Activate autoupdate"* ]]
+  [[ "$output" != *"Check for updates"* ]]
+}
