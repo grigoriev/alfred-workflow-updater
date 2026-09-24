@@ -6,7 +6,7 @@
 [![Release](https://img.shields.io/github/v/release/grigoriev/alfred-workflow-updater)](https://github.com/grigoriev/alfred-workflow-updater/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-[![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=coverage)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
 
 A tiny, self-contained GitHub-release updater for Alfred workflows. One Bash
@@ -65,25 +65,7 @@ Your GitHub releases must attach the `.alfredworkflow` file as an asset. The
 installed version (Alfred's `alfred_workflow_version`) is compared with the
 release tag using `sort -V`, so tags like `v1.2.10` sort correctly.
 
-## Config reference
-
-| Variable       | Required | Default     | Description                         |
-| -------------- | -------- | ----------- | ----------------------------------- |
-| `update_repo`  | yes      | —           | GitHub `owner/repo`.                |
-| `update_asset` | no       | first asset | Release asset filename to download. |
-| `update_icon`  | no       | `icon.png`  | Icon path for the result item.      |
-
-## Tests
-
-```sh
-brew install bats-core
-bats tests
-```
-
-System commands (`curl`, `open`) are mocked under `tests/mocks/bin`, so the
-tests run without touching the network.
-
-## Verify
+### Verify
 
 Each release carries `updater.intoto.jsonl`, a signed build provenance bundle
 for `update.sh`, `autoupdate.sh` and `updater.tar.gz`. Check that this
@@ -92,6 +74,30 @@ repository's release workflow built a download:
 ```sh
 gh attestation verify updater.tar.gz --repo grigoriev/alfred-workflow-updater
 ```
+
+## Config reference
+
+| Variable       | Required | Default     | Description                         |
+| -------------- | -------- | ----------- | ----------------------------------- |
+| `update_repo`  | yes      | none        | GitHub `owner/repo`.                |
+| `update_asset` | no       | first asset | Release asset filename to download. |
+| `update_icon`  | no       | `icon.png`  | Icon path for the result item.      |
+
+## Tests
+
+```sh
+make lint       # ShellCheck update.sh and autoupdate.sh
+make test       # run the bats tests (brew install bats-core)
+make coverage   # run the tests under kcov, as the CI sonar job does
+make build      # pack updater.tar.gz
+```
+
+System commands (`curl`, `open`) are mocked under `tests/mocks/bin`, so the
+tests run without touching the network.
+
+## Contributing
+
+Issues and pull requests are welcome, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Disclaimer
 
