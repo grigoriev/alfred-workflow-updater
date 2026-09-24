@@ -3,6 +3,7 @@
 ![CI](https://github.com/grigoriev/alfred-workflow-updater/actions/workflows/ci.yml/badge.svg)
 [![Release](https://img.shields.io/github/v/release/grigoriev/alfred-workflow-updater)](https://github.com/grigoriev/alfred-workflow-updater/releases)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![OpenSSF Scorecard](https://api.scorecard.dev/projects/github.com/grigoriev/alfred-workflow-updater/badge)](https://scorecard.dev/viewer/?uri=github.com/grigoriev/alfred-workflow-updater)
 [![Quality Gate](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
 [![Coverage](https://sonarcloud.io/api/project_badges/measure?project=grigoriev_alfred-workflow-updater&metric=coverage)](https://sonarcloud.io/summary/new_code?id=grigoriev_alfred-workflow-updater)
 
@@ -79,6 +80,13 @@ bats tests
 
 System commands (`curl`, `open`) are mocked under `tests/mocks/bin`, so the
 tests run without touching the network.
+
+## Disclaimer
+
+This script is provided "as is", without warranty of any kind, as the LICENSE states. Use
+it at your own risk. Sergey Grigoriev is not liable for damage from its use, as far as the law
+allows. It is published free of charge, outside of any commercial offering, with no
+obligation to support it. Security reports are welcome, see SECURITY.md.
 
 ## License
 
