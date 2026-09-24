@@ -82,6 +82,16 @@ bats tests
 System commands (`curl`, `open`) are mocked under `tests/mocks/bin`, so the
 tests run without touching the network.
 
+## Verify
+
+Each release carries `updater.intoto.jsonl`, a signed build provenance bundle
+for `update.sh`, `autoupdate.sh` and `updater.tar.gz`. Check that this
+repository's release workflow built a download:
+
+```sh
+gh attestation verify updater.tar.gz --repo grigoriev/alfred-workflow-updater
+```
+
 ## Disclaimer
 
 This script is provided "as is", without warranty of any kind, as the LICENSE states. Use
