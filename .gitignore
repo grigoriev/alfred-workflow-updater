@@ -2,3 +2,5 @@
 coverage/
 sonar-coverage.xml
 .simplecov
+updater.tar.gz
+updater.intoto.jsonl
