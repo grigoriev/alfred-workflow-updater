@@ -22,7 +22,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with: # zizmor: ignore[artipacked] the Tag and push step pushes with PAT_TOKEN
+        with: # zizmor: ignore[artipacked] the Commit and tag step pushes with PAT_TOKEN
           fetch-depth: 0
           token: ${{ secrets.PAT_TOKEN }}
 
@@ -48,13 +48,23 @@ jobs:
           echo "version=${major}.${minor}.${patch}" >> "$GITHUB_OUTPUT"
           echo "New version: ${major}.${minor}.${patch}"
 
-      - name: Tag and push
+      # The version lives in the tags only. The commit carries the changelog
+      # cut, and the release workflow takes its notes from that section.
+      - name: Move the Unreleased entries of CHANGELOG.md into the release
+        env:
+          NEW_VERSION: ${{ steps.new.outputs.version }}
+        run: .github/scripts/changelog-cut.sh "$NEW_VERSION"
+
+      - name: Commit and tag
         env:
           NEW_VERSION: ${{ steps.new.outputs.version }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add CHANGELOG.md
+          git commit -m "chore: bump version to ${NEW_VERSION}"
           git tag "v${NEW_VERSION}"
+          git push origin HEAD:main
           git push origin "v${NEW_VERSION}"
 
       - name: Summary
