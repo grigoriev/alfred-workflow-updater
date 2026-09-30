@@ -9,6 +9,11 @@ Releases before 1.2.1 are listed on the
 
 ## [Unreleased]
 
+### Fixed
+
+- The update check and the download time out. A slow GitHub API no longer stalls
+  the Script Filter of a workflow.
+
 ### Changed
 
 - The version bump moves the Unreleased entries of this changelog into a section for

@@ -72,3 +72,12 @@ setup() {
   [ "$status" -eq 0 ]
   [ -f "$alfred_workflow_cache/update.alfredworkflow" ]
 }
+
+@test "every curl call has a timeout" {
+  export CURL_LOG="$BATS_TEST_TMPDIR/curl.log"
+  export update_repo=owner/repo
+  run bash update.sh
+  run bash update.sh https://example.com/W.alfredworkflow
+  [ "$(wc -l < "$CURL_LOG")" -eq 2 ]
+  [ "$(grep -c -- '--max-time' "$CURL_LOG")" -eq 2 ]
+}
