@@ -1,5 +1,7 @@
 #!/bin/bash
 # Mock curl. MOCK_LATEST sets the release tag; MOCK_CURL_FAIL simulates failure.
+# CURL_LOG, when set, records the arguments of each call.
+[ -n "$CURL_LOG" ] && echo "$*" >> "$CURL_LOG"
 if [ -n "$MOCK_CURL_FAIL" ]; then
   exit 1
 fi

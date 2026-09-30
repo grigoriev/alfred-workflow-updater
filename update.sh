@@ -48,7 +48,8 @@ query="$1"
 if [[ "$query" != "" ]]; then
   mkdir -p "$cache"
   file="$cache/update.alfredworkflow"
-  if curl --proto '=https' -sfL "$query" -o "$file"; then
+  # Bounded, so a stalled download cannot hang the Alfred action.
+  if curl --proto '=https' -sfL --connect-timeout 5 --max-time 120 "$query" -o "$file"; then
     open "$file"
   fi
   exit
@@ -59,7 +60,9 @@ if [[ "$repo" == "" ]]; then
   exit
 fi
 
-api=$(curl --proto '=https' -sfL "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null)
+# Bounded, so a slow GitHub API cannot stall the Script Filter.
+api=$(curl --proto '=https' -sfL --connect-timeout 3 --max-time 8 \
+  "https://api.github.com/repos/$repo/releases/latest" 2>/dev/null)
 latest=$(printf '%s' "$api" | grep -m 1 '"tag_name"' | sed -E 's/.*"tag_name":[[:space:]]*"v?([^"]+)".*/\1/')
 
 if [[ "$latest" == "" ]]; then

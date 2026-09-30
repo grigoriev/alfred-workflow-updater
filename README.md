@@ -20,9 +20,11 @@ GitHub API, compares the tag with the installed workflow version, and shows:
 
 - **Update to vX.Y.Z** when a newer release exists. Pressing ⏎ downloads and installs it.
 - **Up to date** otherwise.
+- **Could not check for updates** when the GitHub API gives no answer within 8 seconds.
 
 Selecting the update item runs `update.sh` again with the download URL. That
-downloads the asset and opens it, so Alfred installs the new version.
+downloads the asset and opens it, so Alfred installs the new version. The download
+stops after 2 minutes.
 
 ## Autoupdate
 
